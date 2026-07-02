@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "@/lib/api";
 
 import SearchBox from "@/components/SearchBox/SearchBox";
@@ -17,22 +17,31 @@ const PER_PAGE = 12;
 export default function NotesClient() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["notes", page, search],
-    queryFn: () => fetchNotes({ page, perPage: PER_PAGE, search }),
-  });
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 500);
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setPage(1);
-  };
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [search]);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["notes", page, debouncedSearch],
+    queryFn: () =>
+      fetchNotes({ page, perPage: PER_PAGE, search: debouncedSearch }),
+    placeholderData: keepPreviousData,
+  });
 
   return (
     <main className={css.main}>
       <div className={css.toolbar}>
-        <SearchBox onChange={handleSearchChange} />
+        <SearchBox onChange={setSearch} />
 
         {data && data.totalPages > 1 && (
           <Pagination
