@@ -15,7 +15,7 @@ export default function Header() {
           </li>
 
           <li>
-            <Link href="/notes">Notes</Link>
+            <Link href="/notes/filter/all">Notes</Link>
           </li>
         </ul>
       </nav>
