@@ -20,7 +20,6 @@ export async function generateMetadata({
   params,
 }: NotesPageProps): Promise<Metadata> {
   const { slug } = await params;
-
   const tag = slug[0] ?? "all";
 
   return {
@@ -29,6 +28,22 @@ export async function generateMetadata({
       tag === "all"
         ? "Browse and manage all your notes in NoteHub."
         : `Browse and manage notes from the ${tag} category in NoteHub.`,
+    openGraph: {
+      title: tag === "all" ? "All Notes | NoteHub" : `${tag} Notes | NoteHub`,
+      description:
+        tag === "all"
+          ? "Browse and manage all your notes in NoteHub."
+          : `Browse and manage notes from the ${tag} category in NoteHub.`,
+      url: `https://notehub.com/notes/filter/${tag}`,
+      images: [
+        {
+          url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
+          width: 1200,
+          height: 630,
+          alt: "NoteHub application preview",
+        },
+      ],
+    },
   };
 }
 
