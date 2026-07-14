@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   QueryClient,
   dehydrate,
@@ -10,6 +11,19 @@ interface NoteDetailsPageProps {
   params: Promise<{
     id: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: NoteDetailsPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  const note = await fetchNoteById(id);
+
+  return {
+    title: `${note.title} | NoteHub`,
+    description: note.content.slice(0, 150),
+  };
 }
 
 export default async function NoteDetailsPage({

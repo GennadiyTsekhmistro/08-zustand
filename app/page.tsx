@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import css from "./Home.module.css";
+
+export function generateMetadata(): Metadata {
+  return {
+    title: "Home | NoteHub",
+    description:
+      "NoteHub is a simple application for creating, organizing, and managing personal notes.",
+  };
+}
 
 export default function Home() {
   return (

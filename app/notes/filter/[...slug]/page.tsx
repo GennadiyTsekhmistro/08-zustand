@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   QueryClient,
   dehydrate,
@@ -15,9 +16,27 @@ interface NotesPageProps {
   }>;
 }
 
+export async function generateMetadata({
+  params,
+}: NotesPageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  const tag = slug[0] ?? "all";
+
+  return {
+    title: tag === "all" ? "All Notes | NoteHub" : `${tag} Notes | NoteHub`,
+    description:
+      tag === "all"
+        ? "Browse and manage all your notes in NoteHub."
+        : `Browse and manage notes from the ${tag} category in NoteHub.`,
+  };
+}
+
 export default async function NotesPage({ params }: NotesPageProps) {
   const { slug } = await params;
-  const selectedTag = slug[0] === "all" ? undefined : (slug[0] as NoteTag);
+
+  const selectedTag =
+    slug[0] === "all" ? undefined : (slug[0] as NoteTag);
 
   const queryClient = new QueryClient();
 
